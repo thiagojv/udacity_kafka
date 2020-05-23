@@ -17,21 +17,19 @@
     },
     {
       "name": "line",
-      "type": "int"
+      "type": "string"
     },
     {
       "name": "train_status",
-      "type": "int"
+      "type": "string"
     },
     {
       "name": "prev_station_id",
-      "type": ["null", "int"],
-      "default": null
+      "type": ["int", "null"]
     },
     {
       "name": "prev_direction",
-      "type": ["null", "string"],
-      "default": null
+      "type": ["string", "null"]
     }
   ]
 }

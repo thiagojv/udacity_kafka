@@ -17,16 +17,8 @@ class Turnstile(Producer):
 
     def __init__(self, station):
         """Create the Turnstile"""
-        station_name = (
-            station.name.lower()
-            .replace("/", "_and_")
-            .replace(" ", "_")
-            .replace("-", "_")
-            .replace("'", "")
-        )
-
         super().__init__(
-            f"com.udacity.starter.turnstile",
+            f"org.chicago.cta.station.turnstile.v1",
             key_schema = Turnstile.key_schema,
             value_schema = Turnstile.value_schema,
             num_partitions = 1,
@@ -39,13 +31,13 @@ class Turnstile(Producer):
         """Simulates riders entering through the turnstile."""
         num_entries = self.turnstile_hardware.get_entries(timestamp, time_step)
 
-        for x in range(num_entries):
+        for _ in range(num_entries):
             self.producer.produce(
                 topic=self.topic_name,
                 key={"timestamp": self.time_millis()},
                 value={
                     "station_id": self.station.station_id,
                     "station_name": self.station.name,
-                    "line": int(self.station.color)
+                    "line": self.station.color.name
                 }
             )

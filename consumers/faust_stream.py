@@ -27,34 +27,28 @@ class TransformedStation(faust.Record):
 
 app = faust.App("stations-stream", broker="kafka://localhost:9092", store="memory://")
 
-topic = app.topic("raw.cta.stations", value_type=Station)
-out_topic = app.topic("com.udacity.starter.cta.stations", partitions=1)
+topic = app.topic("org.chicago.cta.stations", value_type=Station)
+out_topic = app.topic("org.chicago.cta.stations.table.v1", partitions=1)
 
 table = app.Table(
-   "converted_stations",
-   default=int,
+   "org.chicago.cta.stations.table.v1",
+   default=TransformedStation,
    partitions=1,
    changelog_topic=out_topic,
 )
 
-#
-#
-# TODO: Using Faust, transform input `Station` records into `TransformedStation` records. Note that
-# "line" is the color of the station. So if the `Station` record has the field `red` set to true,
-# then you would set the `line` of the `TransformedStation` record to the string `"red"`
-#
-#
 @app.agent(topic)
 async def transformStation(stations):
     async for station in stations:
+        line = None
         if station.blue:
-            line = 0
+            line = "blue"
         elif station.green:
-            line = 1
+            line = "green"
         elif station.red:
-            line = 2
+            line = "red"
 
-        table[station.stop_id] = TransformedStation(
+        table[station.station_id] = TransformedStation(
             station_id = station.station_id,
             station_name = station.station_name,
             order = station.order,

@@ -55,9 +55,18 @@ class Producer:
             'bootstrap.servers': 'PLAINTEXT://localhost:9092,PLAINTEXT://localhost:9093,PLAINTEXT://localhost:9094'
         })
 
-        topic = [NewTopic(self.topic_name, self.num_partitions, self.num_replicas)]
+        topic_metadata = adminClient.list_topics(timeout=5)
+        if self.topic_name in set(t.topic for t in iter(topic_metadata.topics.values())):
+            logger.info(f"not recreating existing topic {self.topic_name}")
+            return
 
-        fs = adminClient.create_topics(topic)
+        fs = adminClient.create_topics([
+            NewTopic(
+                self.topic_name,
+                self.num_partitions,
+                self.num_replicas
+            )
+        ])
 
         for topic, f in fs.items():
             try:
@@ -68,7 +77,8 @@ class Producer:
 
     def close(self):
         """Prepares the producer for exit by cleaning up the producer"""
-        self.producer.flush()
+        if self.producer is not None:
+            self.producer.flush()
 
     def time_millis(self):
         """Use this function to get the key for Kafka Events"""

@@ -210,7 +210,7 @@ Once the simulation is running, you may hit `Ctrl+C` at any time to exit.
 1. `cd consumers`
 2. `virtualenv venv`
 3. `. venv/bin/activate`
-4. `pip install -r requirements.txt`
+4. `pip3 install -r requirements.txt`
 5. `faust -A faust_stream worker -l info`
 
 
@@ -219,7 +219,7 @@ Once the simulation is running, you may hit `Ctrl+C` at any time to exit.
 2. `virtualenv venv`
 3. `. venv/bin/activate`
 4. `pip install -r requirements.txt`
-5. `python ksql.py`
+5. `python3 ksql.py`
 
 #### To run the `consumer`:
 
